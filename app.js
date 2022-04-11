@@ -16,7 +16,8 @@ const MEET_SHEET_ID = process.env.MEET_SHEET_ID;
 
 const DL_FOLDER_NAME = './dl';
 
-const yt_upload = require('./libs/yt_upload');
+const ytUpload = require('./libs/ytUpload');
+const getClassRooms = require('./libs/getClassRooms');
 
 //Youtubeにアップロード
 const _gdrive2youtube = async (file, type) => {
@@ -40,7 +41,7 @@ const _gdrive2youtube = async (file, type) => {
       status: 'private',
       description: meetChatText,
     }
-    await yt_upload(params);
+    await ytUpload(params);
 
     // 4. localファイル削除
     console.log(`local file deleting...`)
@@ -78,15 +79,14 @@ const main = async () => {
     fs.mkdirSync(DL_FOLDER_NAME); //フォルダ作成      
 
     for await (const file of files) {
+      // const rooms = await getClassRooms();
+      // const roomInfo = rooms.filter(room => room[2].indexOf(file.meetId) != -1);
+      // console.log(roomInfo);
+
       let type = 'backup';
       if(file.meetId === `kbd-xfnb-nah`) {
         type = 'school';
       }
-      // else if(file.meetId === `ukh-puzv-cux`){
-      //   type = 'backup';
-      // }else{
-      //   continue;
-      // }
       
       console.log(`YT upload...`);
       if(file.mimeType === 'video/mp4') {

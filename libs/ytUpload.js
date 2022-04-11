@@ -11,7 +11,8 @@ const _ytUpRouter = async (params) => {
   let token = '';
 
   if(params.channel === 'backup') {
-    token = process.env.YOUTUBE_POS_BACKUP_TOKEN; // backupチャンネルへ
+    // token = process.env.YOUTUBE_POS_BACKUP_TOKEN; // backupチャンネルへ
+    token = process.env.YOUTUBE_POS_BACKUP_TOKEN_SUB // backupチャンネルへ
   }else if(params.channel === 'school'){
     token = process.env.YOUTUBE_POS_TOKEN; // POSチャンネルへ
   }
@@ -71,10 +72,3 @@ const youtubeUpload = async params => {
 }
 
 module.exports = youtubeUpload;
-
-// (async () => {
-//     // await youtubeUpload({
-//     //     MOVIE_PATH: 'dl/mdw-yveh-htv (2022-04-02 18:04 GMT-7).mp4',
-//     //     title: 'testup WIP'
-//     // });
-// })();
