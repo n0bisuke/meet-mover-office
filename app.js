@@ -2,7 +2,6 @@
 
 require('dotenv').config();
 const fs = require('fs');
-const util = require('util');
 
 const Gdrive = require('./libs/gdrive/'); // Class;
 
@@ -24,18 +23,18 @@ const _gdrive2youtube = async (file, type) => {
   
   try {
     // 1. Meetのチャットログ取得
+    console.log(`find...`);
     const meetChatText = await gdrive.getMeetChat(file);
-    console.log(meetChatText);
 
     // 2. ファイルをダウンロード
     console.log(`downloading ${file.name}`);
-    await gdrive.dlFile(file, `./dl`);
+    await gdrive.dlFile(file, DL_FOLDER_NAME);
 
     // 3. Youtubeにアップロード
     console.log(`uploading ${file.name}`);
 
     const params = {
-      MOVIE_PATH: `dl/${file.name}.mp4`,
+      MOVIE_PATH: `${DL_FOLDER_NAME}/${file.name}.mp4`,
       title: `${file.name}`,
       channel: type,
       status: 'private',
@@ -54,18 +53,13 @@ const _gdrive2youtube = async (file, type) => {
   }
 }
 
-//Meetフォルダから移動
+//Meet Recordingsフォルダから移動
 const _gdriveMove = async (file) => {
   try {
-    const res = await gdrive.move(file);
-    console.log(res);
-
+    return await gdrive.move(file);
   } catch (error) {
-
+    throw new Error(error);
   }
-
-
-
 
     // 4. ファイルを削除
     // console.log(`deleting ${file.name}`);
@@ -78,26 +72,33 @@ const main = async () => {
   const files = await gdrive.list();
   // console.log(files);
 
+
   // リスト分を処理
   try {
-    for await (const file of files) {
-      let type = '';
+    fs.mkdirSync(DL_FOLDER_NAME); //フォルダ作成      
 
-      if(file.meetId === `xkh-puzv-cux`) {
+    for await (const file of files) {
+      let type = 'backup';
+      if(file.meetId === `kbd-xfnb-nah`) {
         type = 'school';
-      }else if(file.meetId === `ukh-puzv-cux`){
-        type = 'backup';
-      }else{
-        continue;
       }
+      // else if(file.meetId === `ukh-puzv-cux`){
+      //   type = 'backup';
+      // }else{
+      //   continue;
+      // }
       
-      // console.log(`YT upload...`);
-      // await _gdrive2youtube(file, type);
-      console.log(`YT done, gdrive move...`);
+      console.log(`YT upload...`);
+      if(file.mimeType === 'video/mp4') {
+        await _gdrive2youtube(file, type);
+        console.log(`YT done, gdrive move...`);
+      }
+
       await _gdriveMove(file);
       console.log(`-------`);
     }
- 
+    
+    fs.rmdirSync(DL_FOLDER_NAME); //フォルダ削除
   } catch (error) {
     console.log(error);
   }
