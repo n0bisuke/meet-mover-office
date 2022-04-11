@@ -9,6 +9,7 @@ const listFile = require('./listFile');
 const tokenAuth = require('../tokenAuth');
 const findFile = require('./findFile');
 const createFolder = require('./createFolder');
+const moveParents = require('./moveParents');
 
 class Gdrive {
     constructor(credentialsStr, tokenStr, ORIGIN_FOLDER_ID, DESTINATION_FOLDER_ID) {
@@ -83,7 +84,11 @@ class Gdrive {
 
     async move(file, DESTINATION_FOLDER_ID = this.DESTINATION_FOLDER_ID){
         try {
-            return await createFolder(this.drive, file, DESTINATION_FOLDER_ID);
+            const folderId = await createFolder(this.drive, file, DESTINATION_FOLDER_ID);
+            console.log(folderId);
+            // await moveParents(this.drive, file, DESTINATION_FOLDER_ID);
+            // await 
+            // return await createFolder(this.drive, file, DESTINATION_FOLDER_ID);
         } catch (error) {
             throw new Error(error);
         }

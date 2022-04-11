@@ -2,8 +2,6 @@
 
 async function createFolder(drive, file, DESTINATION_FOLDER_ID){
     const newFolderName = file.meetId;
-    console.log(file);
-
     //バックアップフォルダをチェック
     const params = {
       q: `'${DESTINATION_FOLDER_ID}' in parents and trashed = false`,
@@ -11,12 +9,14 @@ async function createFolder(drive, file, DESTINATION_FOLDER_ID){
     const res = await drive.files.list(params);
 
     const exists = res.data.files.find(destination_file => destination_file.name === newFolderName);
-
-    if(exists) {
+    
+    let folderId = '';
+    if(exists && res.data.files[0].mimeType === 'application/vnd.google-apps.folder') {
       console.log(`${newFolderName}は存在します。`);
+      folderId = res.data.files[0].id; //フォルダーIDを取得
     }else{
-      console.log(`${newFolderName}は存在しません。`);
-      console.log(`フォルダを新規作成します。`);
+      console.log(`${newFolderName}は存在しません。フォルダを新規作成します。`);
+
       const params = {
         fields: 'id',
         requestBody: {
@@ -26,8 +26,11 @@ async function createFolder(drive, file, DESTINATION_FOLDER_ID){
         }
       }
 
-      return await drive.files.create(params);
+      const newFolder = await drive.files.create(params);
+      folderId = newFolder.data.id;
     }
+
+    return folderId;
 }
 
 module.exports = createFolder;

@@ -83,7 +83,13 @@ const main = async () => {
     for await (const file of files) {
       let type = '';
 
-
+      if(file.meetId === `xkh-puzv-cux`) {
+        type = 'school';
+      }else if(file.meetId === `ukh-puzv-cux`){
+        type = 'backup';
+      }else{
+        continue;
+      }
       
       // console.log(`YT upload...`);
       // await _gdrive2youtube(file, type);
