@@ -4,7 +4,6 @@ name: G2G SYNC 毎日17:30,21:30,24:30 (の予定)に起
 # on:
 #   schedule:
 #   - cron:  '30 8,12,15 * * *'
-
 on:
   push:
     branches: [ main ]
