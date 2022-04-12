@@ -38,7 +38,11 @@ jobs:
 
     - name: start action...
       run: > 
-        G_TOKEN_OFFICE=${{secrets.G_TOKEN_OFFICE}} G_CREDENTIALS_GDRIVE_MOVER=${{secrets.G_CREDENTIALS_GDRIVE_MOVER}} ORIGIN_FOLDER_ID=${{secrets.ORIGIN_FOLDER_ID}} DESTINATION_FOLDER_ID=${{secrets.DESTINATION_FOLDER_ID}} node app.js
+        G_TOKEN_OFFICE=${{secrets.G_TOKEN_OFFICE}}
+        G_CREDENTIALS_GDRIVE_MOVER=${{secrets.G_CREDENTIALS_GDRIVE_MOVER}}
+        ORIGIN_FOLDER_ID=${{secrets.ORIGIN_FOLDER_ID}}
+        DESTINATION_FOLDER_ID=${{secrets.DESTINATION_FOLDER_ID}}
+        node app.js
       # run: export ORIGIN_FOLDER_ID=${{secrets.ORIGIN_FOLDER_ID}} 
       # run: export DESTINATION_FOLDER_ID=${{secrets.DESTINATION_FOLDER_ID}} 
       # run: export G_TOKEN_OFFICE=${{secrets.G_TOKEN_OFFICE}}
