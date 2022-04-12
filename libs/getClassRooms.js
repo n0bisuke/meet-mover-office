@@ -7,7 +7,7 @@ const MEET_SHEET_ID = process.env.MEET_SHEET_ID;
 
 const getClassRooms = async (meetId) => {
     // console.log(`???`, meetId, '???')
-    const auth = tokenAuth(process.env.G_SHEET_N0BI_CREDENTIALS, process.env.G_SHEET_N0BI_TOKEN);
+    const auth = tokenAuth(process.env.G_SHEET_NB_CREDENTIALS, process.env.G_SHEET_NB_TOKEN);
     const sheets = google.sheets({version: 'v4', auth});
 
     try {
