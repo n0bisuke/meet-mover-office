@@ -44,6 +44,7 @@ jobs:
         DESTINATION_FOLDER_ID=${{secrets.DESTINATION_FOLDER_ID}}
         MEET_SHEET_ID=${{secrets.MEET_SHEET_ID}}
         G_SHEET_NB_CREDENTIALS=${{secrets.G_SHEET_NB_CREDENTIALS}}
+        G_SHEET_NB_TOKEN=${{secrets.G_SHEET_NB_TOKEN}}
         node app.js
 
 
