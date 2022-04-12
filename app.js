@@ -1,6 +1,8 @@
 'use strict';
 
 console.log(`--setup--`);
+console.log(process.env.ORIGIN_FOLDER_ID);
+console.log(`--setup--`);
 require('dotenv').config();
 const fs = require('fs');
 
