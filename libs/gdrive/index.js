@@ -80,8 +80,7 @@ class Gdrive {
     async move(file, DESTINATION_FOLDER_ID = this.DESTINATION_FOLDER_ID){
         try {
             const folderId = await createFolder(this.drive, file, DESTINATION_FOLDER_ID);
-            // console.log(folderId);
-            return await moveParents(this.drive, file, folderId);
+            return await moveParents(this.drive, file, folderId, DESTINATION_FOLDER_ID);
         } catch (error) {
             throw new Error(error);
         }
