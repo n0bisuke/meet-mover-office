@@ -50,9 +50,4 @@ jobs:
         YOUTUBE_POS_BACKUP_TOKEN_SUB=${{secrets.YOUTUBE_POS_BACKUP_TOKEN_SUB}}
         YOUTUBE_POS_TOKEN=${{secrets.YOUTUBE_POS_TOKEN}}
         node app.js
-
-
-
-
-
       # run: node app.js
