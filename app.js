@@ -1,5 +1,6 @@
 'use strict';
 
+console.log(`--setup--`);
 require('dotenv').config();
 const fs = require('fs');
 
