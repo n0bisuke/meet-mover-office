@@ -89,7 +89,8 @@ const main = async () => {
   
   //フォルダ作成 
   try {
-    fs.mkdirSync(DL_FOLDER_NAME);     
+    console.log(`フォルダ作成...`);
+    fs.mkdirSync(DL_FOLDER_NAME);  
   } catch (error) {
     console.log(`--既にフォルダがあった模様--`);
   }
