@@ -37,7 +37,10 @@ jobs:
       run: yarn install
 
     - name: start action...
-      run: G_TOKEN_OFFICE=${{secrets.G_TOKEN_OFFICE}} node app.js
+      run: > 
+        G_TOKEN_OFFICE=${{secrets.G_TOKEN_OFFICE}}
+        node app.js
+      
       # run: export G_TOKEN_OFFICE=${{secrets.G_TOKEN_OFFICE}}
       # run: export G_CREDENTIALS_GDRIVE_MOVER=${{secrets.G_CREDENTIALS_GDRIVE_MOVER}}
       # run: export YOUTUBE_DS_CREDENTIALS=${{secrets.G_CREDENTIALS_GDRIVE_MOVER}} 
