@@ -2,7 +2,7 @@
 
 console.log(`--setup--`);
 console.log(process.env.ORIGIN_FOLDER_ID);
-console.log(`--setup--`);
+
 require('dotenv').config();
 const fs = require('fs');
 
@@ -19,6 +19,8 @@ const DL_FOLDER_NAME = './dl';
 
 const ytUpload = require('./libs/ytUpload');
 const getClassRooms = require('./libs/getClassRooms');
+
+console.log(`--setup done--`);
 
 //Youtubeにアップロード
 const _gdrive2youtube = async (file) => {
