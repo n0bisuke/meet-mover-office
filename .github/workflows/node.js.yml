@@ -39,6 +39,7 @@ jobs:
     - name: start action...
       run: > 
         G_TOKEN_OFFICE=${{secrets.G_TOKEN_OFFICE}}
+        G_CREDENTIALS_GDRIVE_MOVER=${{secrets.G_CREDENTIALS_GDRIVE_MOVER}}
         node app.js
       
       # run: export G_TOKEN_OFFICE=${{secrets.G_TOKEN_OFFICE}}
