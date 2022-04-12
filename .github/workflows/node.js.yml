@@ -38,15 +38,16 @@ jobs:
 
     - name: start action...
       run: > 
-        G_TOKEN_OFFICE=${{secrets.G_TOKEN_OFFICE}} G_CREDENTIALS_GDRIVE_MOVER=${{secrets.G_CREDENTIALS_GDRIVE_MOVER}} node app.js
+        G_TOKEN_OFFICE=${{secrets.G_TOKEN_OFFICE}} G_CREDENTIALS_GDRIVE_MOVER=${{secrets.G_CREDENTIALS_GDRIVE_MOVER}} ORIGIN_FOLDER_ID=${{secrets.ORIGIN_FOLDER_ID}} DESTINATION_FOLDER_ID=${{secrets.DESTINATION_FOLDER_ID}} node app.js
+      # run: export ORIGIN_FOLDER_ID=${{secrets.ORIGIN_FOLDER_ID}} 
+      # run: export DESTINATION_FOLDER_ID=${{secrets.DESTINATION_FOLDER_ID}} 
       # run: export G_TOKEN_OFFICE=${{secrets.G_TOKEN_OFFICE}}
       # run: export G_CREDENTIALS_GDRIVE_MOVER=${{secrets.G_CREDENTIALS_GDRIVE_MOVER}}
       # run: export YOUTUBE_DS_CREDENTIALS=${{secrets.G_CREDENTIALS_GDRIVE_MOVER}} 
       # run: export YOUTUBE_POS_BACKUP_TOKEN=${{secrets.YOUTUBE_POS_BACKUP_TOKEN}} 
       # run: export YOUTUBE_POS_BACKUP_TOKEN_SUB=${{secrets.YOUTUBE_POS_BACKUP_TOKEN_SUB}} 
       # run: export YOUTUBE_POS_TOKEN=${{YOUTUBE_POS_TOKEN}} 
-      # run: export ORIGIN_FOLDER_ID=${{secrets.ORIGIN_FOLDER_ID}} 
-      # run: export DESTINATION_FOLDER_ID=${{secrets.DESTINATION_FOLDER_ID}} 
+
       # run: export MEET_SHEET_ID=${{secrets.MEET_SHEET_ID}} 
       # run: export G_SHEET_N0BI_CREDENTIALS=${{secrets.G_SHEET_N0BI_CREDENTIALS}} 
       # run: export G_SHEET_N0BI_TOKEN=${{G_SHEET_N0BI_TOKEN}} 

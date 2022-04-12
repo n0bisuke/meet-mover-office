@@ -11,10 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/local-auth": "^1.0.1",
     "dotenv": "^16.0.0",
     "google-auth-token-generator": "^0.1.4",
-    "googleapis": "^100.0.0",
-    "opn": "^6.0.0"
+    "googleapis": "^100.0.0"
+  },
+  "devDependencies": {
+    "@google-cloud/local-auth": "^1.0.1"
   }
 }
