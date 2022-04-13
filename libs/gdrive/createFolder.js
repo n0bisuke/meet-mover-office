@@ -11,7 +11,7 @@ async function createFolder(drive, file, DESTINATION_FOLDER_ID){
       q: `'${DESTINATION_FOLDER_ID}' in parents and trashed = false`,
     }
     const res = await drive.files.list(params);
-    const exists = res.data.files.find(destination_file => destination_file.name === newFolderName);
+    const exists = res.data.files.find(destination_file => destination_file.name.indexOf(newFolderName) != -1);
 
     // console.log(`${newFolderName}は...`);
     let folderId = '';
