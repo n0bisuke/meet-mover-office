@@ -25,7 +25,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [17.x]
+        node-version: [18.x]
 
     # 以下が実際のステップ
     steps:
@@ -33,10 +33,10 @@ jobs:
     # この例では、v2 を使用することにより、チェックアウトアクションの安定版を確実に使用するようにしています
     - uses: actions/checkout@v2
     # Node.js 17.x のセットアップ
-    - name: Use Node.js 17.x
+    - name: Use Node.js 18.x
       uses: actions/setup-node@v1
       with:
-        node-version: '17.x'
+        node-version: '18.x'
     # package.json を参考にインストールがはじまる、この場合は axios がインストール    
     - name: yarn install command
       run: yarn install
