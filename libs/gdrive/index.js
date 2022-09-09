@@ -12,7 +12,7 @@ const createFolder = require('./createFolder');
 const moveParents = require('./moveParents');
 
 class Gdrive {
-    constructor(credentialsStr, tokenStr, ORIGIN_FOLDER_ID, DESTINATION_FOLDER_ID) {
+    constructor(credentialsStr, tokenStr, ORIGIN_FOLDER_ID, DESTINATION_DRIVE_ID) {
         this.drive = google.drive({
             version: 'v3',
             auth: tokenAuth(credentialsStr, tokenStr)
@@ -23,7 +23,7 @@ class Gdrive {
             auth: tokenAuth(credentialsStr, tokenStr)
         });
 
-        this.DESTINATION_FOLDER_ID = DESTINATION_FOLDER_ID;
+        this.DESTINATION_DRIVE_ID = DESTINATION_DRIVE_ID;
         this.ORIGIN_FOLDER_ID = ORIGIN_FOLDER_ID;
         this.DL_FOLDER_NAME = './dl';
     }
@@ -77,10 +77,11 @@ class Gdrive {
         }
     }
 
-    async move(file, DESTINATION_FOLDER_ID = this.DESTINATION_FOLDER_ID){
+    async move(file, DESTINATION_DRIVE_ID = this.DESTINATION_DRIVE_ID){
         try {
-            const folderId = await createFolder(this.drive, file, DESTINATION_FOLDER_ID);
-            return await moveParents(this.drive, file, folderId, DESTINATION_FOLDER_ID);
+            console.log(`--フォルダ...`)
+            const folderId = await createFolder(this.drive, file, DESTINATION_DRIVE_ID);
+            return await moveParents(this.drive, file, folderId, DESTINATION_DRIVE_ID);
         } catch (error) {
             throw new Error(error);
         }
