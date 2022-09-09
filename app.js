@@ -22,6 +22,7 @@ const ytUpload = require('./libs/ytUpload');
 const getClassRooms = require('./libs/getClassRooms');
 
 console.log(`--setup done--`);
+return;
 
 //Youtubeにアップロード
 const _gdrive2youtube = async (file) => {
