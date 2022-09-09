@@ -9,14 +9,18 @@ orbs:
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  triggers:
-     - schedule:
-         # Every day, 0421Z.
-         cron: "21 * * * *"
-         filters:
-           branches:
-             only:
-               - main
+  normal_workflow:
+    triggers:
+      - schedule:
+          # Every day, 0421Z.
+          cron: "21 * * * *"
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - start
+
   # sample: # This is the name of the workflow, feel free to change it to better match your workflow.
   #   # Inside the workflow, you define the jobs you want to run.
   #   jobs:
