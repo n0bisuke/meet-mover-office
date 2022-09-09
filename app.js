@@ -1,9 +1,10 @@
 'use strict';
 
+require('dotenv').config();
+
 console.log(`--setup--`);
 console.log(process.env.ORIGIN_FOLDER_ID);
 
-require('dotenv').config();
 const fs = require('fs');
 
 const Gdrive = require('./libs/gdrive/'); // Class;
