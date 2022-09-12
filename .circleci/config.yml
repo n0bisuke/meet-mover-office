@@ -12,6 +12,7 @@ jobs:
       - image: node:16
     steps:
       - checkout
+      - run: yarn install
       - run: yarn start
 
 # Invoke jobs via workflows
