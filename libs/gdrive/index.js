@@ -59,16 +59,17 @@ class Gdrive {
 
             //チャットファイルがあればDL
             if(chatFile?.id){
-                const { dlFileName } = await this.dlFile(chatFile, DL_FOLDER_NAME);
-                const meetChat = fs.readFileSync(`${DL_FOLDER_NAME}/${dlFileName}`, 'utf8');
+                // const { dlFileName } = await this.dlFile(chatFile, DL_FOLDER_NAME);
+                // const meetChat = fs.readFileSync(`${DL_FOLDER_NAME}/${dlFileName}`, 'utf8');
                 
-                //Youtubeの概要欄が5000文字までっぽいので、4900文字までで切り取っておく。
-                ytInsertText = meetChat;
-                if(meetChat.length > 4900){
-                    ytInsertText = meetChat.slice(0, 4900);
-                }
-                //削除
-                fs.unlinkSync(`${DL_FOLDER_NAME}/${dlFileName}`);
+                // //Youtubeの概要欄が5000文字までっぽいので、4900文字までで切り取っておく。
+                // ytInsertText = meetChat;
+                // if(meetChat.length > 4900){
+                //     ytInsertText = meetChat.slice(0, 4900);
+                // }
+                // //削除
+                // fs.unlinkSync(`${DL_FOLDER_NAME}/${dlFileName}`);
+                ytInsertText = `チャットあり`;
             }
 
             return ytInsertText;
