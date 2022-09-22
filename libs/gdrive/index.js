@@ -1,7 +1,7 @@
 'use strict';
 
 const {google} = require('googleapis');
-const fs = require('fs');
+// const fs = require('fs');
 
 const dlFile = require('./dlFile');
 const deleteFile = require('./deleteFile');
@@ -80,7 +80,7 @@ class Gdrive {
 
     async move(file, DESTINATION_DRIVE_ID = this.DESTINATION_DRIVE_ID){
         try {
-            console.log(`--フォルダ...`)
+            console.log(`--フォルダ内を確認します...`)
             const folderId = await createFolder(this.drive, file, DESTINATION_DRIVE_ID);
             return await moveParents(this.drive, file, folderId, DESTINATION_DRIVE_ID);
         } catch (error) {

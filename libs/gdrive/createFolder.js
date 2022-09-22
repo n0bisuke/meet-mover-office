@@ -37,7 +37,9 @@ async function createFolder(drive, file, DESTINATION_DRIVE_ID, DESTINATION_FOLDE
       }
 
       const newFolder = await drive.files.create(params);
+      // console.log(`作成done: `, newFolder);
       folderId = newFolder.data.id;
+      console.log(`新規フォルダー作成done`);
     }
 
     return folderId;

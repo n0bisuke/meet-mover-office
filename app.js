@@ -24,11 +24,18 @@ const main = async () => {
   // リスト分を処理
   try {
     for await (const file of files) {
-      console.log(`start...`);
+      if(file.mimeType === `application/vnd.google-apps.folder`) {
+        console.log(`フォルダーなのでスキップします。`)
+        continue;
+      }
+
+      console.log(`処理start...`);
       //Meet Recordingsフォルダから移動
       await gdrive.move(file);
-      console.log(`---done----`);
+      console.log(`...処理終わり`);
     }
+
+    console.log(`----All DONE----`)
   } catch (error) {
     console.log(error);
   }
