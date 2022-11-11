@@ -19,12 +19,12 @@ jobs:
           node-version: '18.x'
 
       # キャッシュ
-      # - name: Cache dependencies
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: ~/.npm
-      #     key: npm-${{ hashFiles('package-lock.json') }} 
-      #     restore-keys: npm-
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: npm-${{ }} >> hashFiles('package-lock.json')
+          restore-keys: npm-
 
       # インストール
       - name: yarn install command
