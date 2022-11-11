@@ -5,10 +5,10 @@ name: 15分ごとに実行
 #   schedule:
 #   - cron:  '30 8,12,15 * * *'
 
-30分ごと
+name: 30分ごと
 on:
   schedule:
-  - cron:  '45,16 * * * *'
+  - cron:  '47,17 * * * *'
 
 # on:
 #   push:
