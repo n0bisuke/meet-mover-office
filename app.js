@@ -123,6 +123,7 @@ const main = async () => {
     console.log(`フォルダ作成...`);
     fs.mkdirSync(DL_FOLDER_NAME);  
   } catch (error) {
+    console.log(error)
     console.log(`--既にフォルダがあった模様--`);
   }
 
