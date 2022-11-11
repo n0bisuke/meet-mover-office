@@ -1,14 +1,12 @@
 name: 30分ごと
-# +9時間 2021/10/3
 
 # on:
 #   schedule:
 #   - cron:  '30 8,12,15 * * *'
 
 on:
-  push:
-  # schedule:
-  # - cron:  '47,17 * * * *'
+  schedule:
+  - cron:  '0,30 * * * *'
 
 # on:
 #   push:
