@@ -1,10 +1,10 @@
 'use strict'
 
-async function createFolder(drive, file, DESTINATION_FOLDER_ID){
+async function createFolder(drive, file, DESTINATION_DRIVE_ID, DESTINATION_FOLDER_ID=process.env.DESTINATION_FOLDER_ID){
     const newFolderName = file.meetId;
     //バックアップフォルダをチェック
     const params = {
-      driveId: DESTINATION_FOLDER_ID,
+      driveId: DESTINATION_DRIVE_ID,
       corpora: 'drive',
       includeItemsFromAllDrives: true,
       supportsTeamDrives: true,
@@ -23,7 +23,7 @@ async function createFolder(drive, file, DESTINATION_FOLDER_ID){
       console.log(`存在しません。フォルダを新規作成します。`);
 
       const params = {
-        driveId: DESTINATION_FOLDER_ID,
+        driveId: DESTINATION_DRIVE_ID,
         corpora: 'drive',
         includeItemsFromAllDrives: true,
         supportsTeamDrives: true,
@@ -37,7 +37,9 @@ async function createFolder(drive, file, DESTINATION_FOLDER_ID){
       }
 
       const newFolder = await drive.files.create(params);
+      // console.log(`作成done: `, newFolder);
       folderId = newFolder.data.id;
+      console.log(`新規フォルダー作成done`);
     }
 
     return folderId;
