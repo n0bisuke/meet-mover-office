@@ -3,14 +3,12 @@ name: 30分ごと
 on:
   push:
     branches: [ main ]
-
   # schedule:
   # - cron:  '0,30 * * * *'
 
 jobs:
   build:
-    # このジョブのために ubuntu サーバーを準備
-    # まっさらなサーバーなので、以下で Node.js 自体の準備や npm install を行う
+
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
