@@ -35,10 +35,19 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '18.x'
-    # package.json を参考にインストールがはじまる、この場合は axios がインストール    
+    
+    # キャッシュ
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: npm-${{ hashFiles('package-lock.json') }}
+        restore-keys: npm-
+    # インストール
     - name: yarn install command
       run: yarn install
-
+    
+    # 実際のコマンド
     - name: start action...
       run: > 
         G_TOKEN_OFFICE=${{secrets.G_TOKEN_OFFICE}}
