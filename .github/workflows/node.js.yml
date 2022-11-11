@@ -5,14 +5,14 @@ name: 15分ごとに実行
 #   schedule:
 #   - cron:  '30 8,12,15 * * *'
 
-#2時間ごと
-# on:
-#   schedule:
-#   - cron:  '0,15,30,45 */1 * * *'
-
+#15分ごと
 on:
-  push:
-    branches: [ main ]
+  schedule:
+  - cron:  '0,15,30,45 */1 * * *'
+
+# on:
+#   push:
+#     branches: [ main ]
     # プッシュ時に動作する
 
 jobs:
