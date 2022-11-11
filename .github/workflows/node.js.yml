@@ -8,8 +8,8 @@ name: 15分ごとに実行
 name: 30分ごと
 on:
   push:
-  schedule:
-  - cron:  '47,17 * * * *'
+  # schedule:
+  # - cron:  '47,17 * * * *'
 
 # on:
 #   push:
