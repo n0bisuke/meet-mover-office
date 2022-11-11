@@ -5,6 +5,7 @@ on:
     branches: [ main ]
   # schedule:
   # - cron:  '0,30 * * * *'
+
 jobs:
   build:
 
@@ -16,32 +17,29 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '12.x'
-    
-    # キャッシュ
-    - name: Cache dependencies
-      uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        key: npm-${{ hashFiles('package-lock.json') }}
-        restore-keys: npm-
-
-    # インストール
-    - name: yarn install command
-      run: yarn install
-    
-    # 実際のコマンド
-    - name: start action...
-      run: > 
-        G_TOKEN_OFFICE=${{secrets.G_TOKEN_OFFICE}}
-        G_CREDENTIALS_GDRIVE_MOVER=${{secrets.G_CREDENTIALS_GDRIVE_MOVER}}
-        ORIGIN_FOLDER_ID=${{secrets.ORIGIN_FOLDER_ID}}
-        DESTINATION_DRIVE_ID=${{secrets.DESTINATION_DRIVE_ID}}
-        DESTINATION_FOLDER_ID=${{secrets.DESTINATION_FOLDER_ID}}
-        MEET_SHEET_ID=${{secrets.MEET_SHEET_ID}}
-        G_SHEET_NB_CREDENTIALS=${{secrets.G_SHEET_NB_CREDENTIALS}}
-        G_SHEET_NB_TOKEN=${{secrets.G_SHEET_NB_TOKEN}}
-        YOUTUBE_DS_CREDENTIALS=${{secrets.YOUTUBE_DS_CREDENTIALS}}
-        YOUTUBE_POS_BACKUP_TOKEN=${{secrets.YOUTUBE_POS_BACKUP_TOKEN}}
-        YOUTUBE_POS_BACKUP_TOKEN_SUB=${{secrets.YOUTUBE_POS_BACKUP_TOKEN_SUB}}
-        YOUTUBE_POS_TOKEN=${{secrets.YOUTUBE_POS_TOKEN}}
-        node app.js
+      # キャッシュ
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-
+      # インストール
+      - name: yarn install command
+        run: yarn install
+      # 実際のコマンド
+      - name: start action...
+        run: > 
+          G_TOKEN_OFFICE=${{secrets.G_TOKEN_OFFICE}}
+          G_CREDENTIALS_GDRIVE_MOVER=${{secrets.G_CREDENTIALS_GDRIVE_MOVER}}
+          ORIGIN_FOLDER_ID=${{secrets.ORIGIN_FOLDER_ID}}
+          DESTINATION_DRIVE_ID=${{secrets.DESTINATION_DRIVE_ID}}
+          DESTINATION_FOLDER_ID=${{secrets.DESTINATION_FOLDER_ID}}
+          MEET_SHEET_ID=${{secrets.MEET_SHEET_ID}}
+          G_SHEET_NB_CREDENTIALS=${{secrets.G_SHEET_NB_CREDENTIALS}}
+          G_SHEET_NB_TOKEN=${{secrets.G_SHEET_NB_TOKEN}}
+          YOUTUBE_DS_CREDENTIALS=${{secrets.YOUTUBE_DS_CREDENTIALS}}
+          YOUTUBE_POS_BACKUP_TOKEN=${{secrets.YOUTUBE_POS_BACKUP_TOKEN}}
+          YOUTUBE_POS_BACKUP_TOKEN_SUB=${{secrets.YOUTUBE_POS_BACKUP_TOKEN_SUB}}
+          YOUTUBE_POS_TOKEN=${{secrets.YOUTUBE_POS_TOKEN}}
+          node app.js
