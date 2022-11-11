@@ -2,7 +2,7 @@
 
 require('dotenv').config();
 
-console.log(`--setup--`);
+console.log(`--setup---`);
 console.log(process.env.ORIGIN_FOLDER_ID);
 
 const Gdrive = require('./libs/gdrive/'); // Class;
