@@ -1,10 +1,10 @@
 name: 30分ごと
 
 on:
-  push:
-    branches: [ main ]
-  # schedule:
-  # - cron:  '0,30 * * * *'
+  # push:
+  #   branches: [ main ]
+  schedule:
+  - cron:  '0,30 * * * *'
 
 jobs:
   build:
