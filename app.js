@@ -4,7 +4,7 @@ require('dotenv').config();
 const fs = require('fs');
 const DL_FOLDER_NAME = './dl';
 
-console.log(`--setup---`);
+console.log(`--setup--`);
 console.log(process.env.ORIGIN_FOLDER_ID);
 
 const Gdrive = require('./libs/gdrive/'); // Class;
