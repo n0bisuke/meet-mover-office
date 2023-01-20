@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dayjs": "^1.11.7",
     "dotenv": "^16.0.0",
     "google-auth-token-generator": "^0.1.4",
     "googleapis": "^100.0.0"

@@ -1,8 +1,19 @@
 'use strict';
 
-require('dotenv').config();
 const fs = require('fs');
+
 const DL_FOLDER_NAME = './dl';
+
+//ログ用途
+const LOGFILE_NAME = `log.json`;
+const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("Asia/Tokyo");
+
+require('dotenv').config();
 
 console.log(`--setup--`);
 console.log(process.env.ORIGIN_FOLDER_ID);
@@ -146,6 +157,14 @@ const main = async () => {
     }
     
     fs.rmdirSync(DL_FOLDER_NAME); //フォルダ削除
+
+    //ロギング
+    const logjson = {
+      msg: 'success',
+      time: dayjs().tz().format()
+    }
+    fs.writeFileSync(LOGFILE_NAME, JSON.stringify(logjson));
+    console.log(`log done--`)
   } catch (error) {
     console.log(error);
   }
