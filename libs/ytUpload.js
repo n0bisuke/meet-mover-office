@@ -35,7 +35,7 @@ const youtubeUpload = async params => {
         if(fileName.indexOf('.txt') != -1) return;
 
         const fileSize = fs.statSync(fileName).size;
-        const res = await youtube.videos.insert(
+        const uploadedVideo = await youtube.videos.insert(
             {
               part: 'id,snippet,status',
               notifySubscribers: false,
@@ -64,8 +64,27 @@ const youtubeUpload = async params => {
             }
           );
           console.log('\n\n');
+          console.log(uploadedVideo.data);
+
+          //非公開作業リストに追加
+          const params = {
+            part: 'id,snippet,contentDetails',
+            requestBody: {
+              snippet: {
+                playlistId: 'PLeVbfCYWrCE2AmrGkEU8L3QmERR7PuP-a',
+                position: 0,
+                resourceId: {
+                  videoId: uploadedVideo.data.id,
+                  kind: 'youtube#video'
+                },
+              },
+            }
+          }
+          const res = await youtube.playlistItems.insert(params);
           console.log(res.data);
-          return res.data;
+          
+          return uploadedVideo.data;
+          // return res.data;
 
     } catch (error) {
         console.log('The API returned an error: ' + error);
