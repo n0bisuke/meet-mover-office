@@ -11,51 +11,56 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [21.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.x'
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
 
-      # キャッシュ
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('package-lock.json') }} 
-          restore-keys: npm-
+    # キャッシュ
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: npm-${{ hashFiles('package-lock.json') }} 
+        restore-keys: npm-
 
+    # インストール
+    - name: yarn install command
+      run: yarn install
 
-      # インストール
-      - name: yarn install command
-        run: yarn install
+    # 実際のコマンド
+    - name: start action...
+      run: > 
+        G_TOKEN_OFFICE=${{secrets.G_TOKEN_OFFICE}}
+        G_CREDENTIALS_GDRIVE_MOVER=${{secrets.G_CREDENTIALS_GDRIVE_MOVER}}
+        ORIGIN_MEET_REC_FOLDER_ID=${{secrets.ORIGIN_MEET_REC_FOLDER_ID}}
+        MOVED_DRIVE_ID=${{secrets.MOVED_DRIVE_ID}}
+        MEET_SHEET_ID=${{secrets.MEET_SHEET_ID}}
+        G_SHEET_NB_CREDENTIALS=${{secrets.G_SHEET_NB_CREDENTIALS}}
+        G_SHEET_NB_TOKEN=${{secrets.G_SHEET_NB_TOKEN}}
+        YOUTUBE_DS_CREDENTIALS=${{secrets.YOUTUBE_DS_CREDENTIALS}}
+        YOUTUBE_POS_TOKEN=${{secrets.YOUTUBE_POS_TOKEN}}
+        YT_WS_PLAYLIST_ID=${{secrets.YT_WS_PLAYLIST_ID}}
+        YOUTUBE_POS_BACKUP_TOKEN=${{secrets.YOUTUBE_POS_BACKUP_TOKEN}}
+        YOUTUBE_POS_BACKUP_TOKEN_SUB=${{secrets.YOUTUBE_POS_BACKUP_TOKEN_SUB}}
+        node app.js
 
-      # 実際のコマンド
-      - name: start action...
-        run: > 
-          G_TOKEN_OFFICE=${{secrets.G_TOKEN_OFFICE}}
-          G_CREDENTIALS_GDRIVE_MOVER=${{secrets.G_CREDENTIALS_GDRIVE_MOVER}}
-          ORIGIN_MEET_REC_FOLDER_ID=${{secrets.ORIGIN_MEET_REC_FOLDER_ID}}
-          MOVED_DRIVE_ID=${{secrets.MOVED_DRIVE_ID}}
-          MEET_SHEET_ID=${{secrets.MEET_SHEET_ID}}
-          G_SHEET_NB_CREDENTIALS=${{secrets.G_SHEET_NB_CREDENTIALS}}
-          G_SHEET_NB_TOKEN=${{secrets.G_SHEET_NB_TOKEN}}
-          YOUTUBE_DS_CREDENTIALS=${{secrets.YOUTUBE_DS_CREDENTIALS}}
-          YOUTUBE_POS_TOKEN=${{secrets.YOUTUBE_POS_TOKEN}}
-          YT_WS_PLAYLIST_ID=${{secrets.YT_WS_PLAYLIST_ID}}
-          YOUTUBE_POS_BACKUP_TOKEN=${{secrets.YOUTUBE_POS_BACKUP_TOKEN}}
-          YOUTUBE_POS_BACKUP_TOKEN_SUB=${{secrets.YOUTUBE_POS_BACKUP_TOKEN_SUB}}
-          node app.js
-
-      - name: git commit & push
-        run: |
-          git config core.filemode false
-          if ! git diff --exit-code --quiet
-          then
-            git add --update
-            git config user.name github-actions
-            git config user.email action@github.com
-            git commit -m "Commit by github-actions"
-            git push https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git HEAD:${{github.ref}}
-          fi
+    - name: git commit & push
+      run: |
+        git config core.filemode false
+        if ! git diff --exit-code --quiet
+        then
+          git add --update
+          git config user.name github-actions
+          git config user.email action@github.com
+          git commit -m "Commit by github-actions"
+          git push https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git HEAD:${{github.ref}}
+        fi
