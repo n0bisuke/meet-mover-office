@@ -12,7 +12,7 @@ const createFolder = require('./createFolder');
 const moveParents = require('./moveParents');
 
 class Gdrive {
-    constructor(credentialsStr, tokenStr, ORIGIN_MEET_REC_FOLDER_ID, DESTINATION_DRIVE_ID) {
+    constructor(credentialsStr, tokenStr, ORIGIN_MEET_REC_FOLDER_ID, MOVED_DRIVE_ID) {
         this.drive = google.drive({
             version: 'v3',
             auth: tokenAuth(credentialsStr, tokenStr)
@@ -23,7 +23,7 @@ class Gdrive {
             auth: tokenAuth(credentialsStr, tokenStr)
         });
 
-        this.DESTINATION_DRIVE_ID = DESTINATION_DRIVE_ID;
+        this.MOVED_DRIVE_ID = MOVED_DRIVE_ID;
         this.ORIGIN_MEET_REC_FOLDER_ID = ORIGIN_MEET_REC_FOLDER_ID; //Meet RecordingsフォルダのID
         this.DL_FOLDER_NAME = './dl';
     }
@@ -79,11 +79,14 @@ class Gdrive {
         }
     }
 
-    async move(file, DESTINATION_DRIVE_ID = this.DESTINATION_DRIVE_ID){
+    //指定がなければDRIVE_IDとFOLDER_IDはデフォルト値を使う
+    async move(file, MOVED_DRIVE_ID = this.MOVED_DRIVE_ID, MOVED_FOLDER_ID = this.MOVED_DRIVE_ID){
         try {
             console.log(`--フォルダ内を確認します...`)
-            const folderId = await createFolder(this.drive, file, DESTINATION_DRIVE_ID);
-            return await moveParents(this.drive, file, folderId, DESTINATION_DRIVE_ID);
+            const folderId = await createFolder(this.drive, file, MOVED_DRIVE_ID, MOVED_FOLDER_ID);
+            // console.log(`--folderId: ${folderId}--`);
+
+            return await moveParents(this.drive, file, folderId, MOVED_DRIVE_ID);
         } catch (error) {
             throw new Error(error);
         }

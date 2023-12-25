@@ -1,10 +1,10 @@
 'use strict'
 
-async function moveParents(drive, file, targetFolderId, DESTINATION_DRIVE_ID){
+async function moveParents(drive, file, targetFolderId, MOVED_DRIVE_ID){
     try {
         const params = {
             fileId: file.id,
-            driveId: DESTINATION_DRIVE_ID,
+            driveId: MOVED_DRIVE_ID,
             corpora: 'drive',
             includeItemsFromAllDrives: true,
             supportsTeamDrives: true,

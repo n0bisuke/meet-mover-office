@@ -23,9 +23,9 @@ const Gdrive = require('./libs/gdrive/'); // Class;
 const credentialsStr = process.env.G_CREDENTIALS_GDRIVE_MOVER;
 const tokenStr = process.env.G_TOKEN_OFFICE;
 const ORIGIN_MEET_REC_FOLDER_ID = process.env.ORIGIN_MEET_REC_FOLDER_ID; //ここにフォルダIDを指定
-const DESTINATION_DRIVE_ID = process.env.DESTINATION_DRIVE_ID;
+const MOVED_DRIVE_ID = process.env.MOVED_DRIVE_ID;
 
-const gdrive = new Gdrive(credentialsStr, tokenStr, ORIGIN_MEET_REC_FOLDER_ID, DESTINATION_DRIVE_ID);
+const gdrive = new Gdrive(credentialsStr, tokenStr, ORIGIN_MEET_REC_FOLDER_ID, MOVED_DRIVE_ID);
 
 const ytUpload = require('./libs/ytUpload');
 const getClassRooms = require('./libs/getClassRooms');
@@ -80,7 +80,6 @@ const _gdrive2youtube = async (file) => {
     let ytUploadTitle = file.name;
     // console.log(`--::${file.meetId}`)
     const classRooms = await getClassRooms(file.meetId);
-    // console.log(classRooms);
 
     if(classRooms.length){
       const CLASS_NAME = classRooms[0][1].split('授業部屋')[0]; //title用
@@ -89,7 +88,7 @@ const _gdrive2youtube = async (file) => {
       type = 'school';
     }
 
-    const params = {
+    const uploadOptions = {
       MOVIE_PATH: `${DL_FOLDER_NAME}/${file.name}.mp4`,
       title: `${ytUploadTitle}`,
       channel: type,
@@ -97,7 +96,7 @@ const _gdrive2youtube = async (file) => {
       description: meetChatText,
     }
     console.log(`Uploading for ${type} Youtube...`);
-    await ytUpload(params);
+    await ytUpload(uploadOptions);
 
     // 4. localファイル削除
     console.log(`local file deleting...`)
@@ -125,12 +124,11 @@ const _gdrive2youtube = async (file) => {
 // }
 
 const main = async () => {
-  // 1. MEETフォルダのファイルリストを取得
+  // 1. Meet Recordingsフォルダから、録画したての録画ファイルのリストを取得
   const files = await gdrive.list();
   console.log(files);
-  return;
 
-  //フォルダ作成 
+  // 2. ローカルでDLフォルダ作成 - DLの下準備
   try {
     console.log(`フォルダ作成...`);
     fs.mkdirSync(DL_FOLDER_NAME);  
@@ -139,21 +137,22 @@ const main = async () => {
     console.log(`--既にフォルダがあった模様--`);
   }
 
-  // リスト分を処理
   try {
-
 
     for await (const file of files) {
       console.log(`start...`);      
 
-      if(file.mimeType === 'video/mp4') {
+      // 3. 1で作ったMeet Recordingsフォルダ内の該当するファイルをYouTubeにアップロード
+      if(file.mimeType === 'video/mp4') { //動画ファイルのみ処理
         console.log(`YT upload...`);
         await _gdrive2youtube(file);
         console.log(`YT done, gdrive move...`);
       }
       
-      //Meet Recordingsフォルダから移動
-      await gdrive.move(file);
+
+      // 4. Meet Recordingsフォルダから別のドライブ及び指定フォルダに移動
+      // await gdrive.move(file, MOVED_DRIVE_ID, process.env.MOVED_FOLDER_ID);
+      await gdrive.move(file); //指定がない場合はドライブのルート(DRIVE_IDとFOLDER_IDが同じ)に移動
       console.log(`---done----`);
     }
     

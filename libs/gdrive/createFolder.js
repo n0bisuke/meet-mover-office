@@ -1,14 +1,14 @@
 'use strict'
 
-async function createFolder(drive, file, DESTINATION_DRIVE_ID, DESTINATION_FOLDER_ID=process.env.DESTINATION_FOLDER_ID){
+async function createFolder(drive, file, MOVED_DRIVE_ID, MOVED_FOLDER_ID){
     const newFolderName = file.meetId;
     //バックアップフォルダをチェック
     const params = {
-      driveId: DESTINATION_DRIVE_ID,
+      driveId: MOVED_DRIVE_ID,
       corpora: 'drive',
       includeItemsFromAllDrives: true,
       supportsTeamDrives: true,
-      q: `'${DESTINATION_FOLDER_ID}' in parents and trashed = false`,
+      q: `'${MOVED_FOLDER_ID}' in parents and trashed = false`, //フォルダ内のファイルを検索
     }
     const res = await drive.files.list(params);
     const exists = res.data.files.find(destination_file => destination_file.name.indexOf(newFolderName) != -1);
@@ -23,14 +23,14 @@ async function createFolder(drive, file, DESTINATION_DRIVE_ID, DESTINATION_FOLDE
       console.log(`存在しません。フォルダを新規作成します。`);
 
       const params = {
-        driveId: DESTINATION_DRIVE_ID,
+        driveId: MOVED_DRIVE_ID,
         corpora: 'drive',
         includeItemsFromAllDrives: true,
         supportsTeamDrives: true,
         
         fields: 'id',
         requestBody: {
-          parents: [DESTINATION_FOLDER_ID],
+          parents: [MOVED_FOLDER_ID],
           name: newFolderName,
           mimeType: 'application/vnd.google-apps.folder'
         }
