@@ -1,22 +1,17 @@
 {
   "name": "gdrive-mover",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "node --env-file=.env app.js",
     "deploy": "git add . && git commit -m 'update' && git push origin main"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dayjs": "^1.11.7",
-    "dotenv": "^16.0.0",
-    "google-auth-token-generator": "^0.1.4",
-    "googleapis": "^100.0.0"
-  },
-  "devDependencies": {
-    "@google-cloud/local-auth": "^1.0.1"
+    "dayjs": "^1.11.10",
+    "googleapis": "^129.0.0"
   }
 }

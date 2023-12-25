@@ -1,11 +1,12 @@
 'use strict';
 
-const fs = require('fs');
+const fs = require('node:fs');
 
 const DL_FOLDER_NAME = './dl';
 
 //ログ用途
 const LOGFILE_NAME = `log.json`;
+
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
@@ -13,10 +14,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault("Asia/Tokyo");
 
-require('dotenv').config();
-
 console.log(`--setup--`);
-console.log(process.env.ORIGIN_MEET_REC_FOLDER_ID);
 
 const Gdrive = require('./libs/gdrive/'); // Class;
 
@@ -126,7 +124,7 @@ const _gdrive2youtube = async (file) => {
 const main = async () => {
   // 1. Meet Recordingsフォルダから、録画したての録画ファイルのリストを取得
   const files = await gdrive.list();
-  console.log(files);
+  // console.log(files);
 
   // 2. ローカルでDLフォルダ作成 - DLの下準備
   try {

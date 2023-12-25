@@ -51,7 +51,7 @@ jobs:
         YT_WS_PLAYLIST_ID=${{secrets.YT_WS_PLAYLIST_ID}}
         YOUTUBE_POS_BACKUP_TOKEN=${{secrets.YOUTUBE_POS_BACKUP_TOKEN}}
         YOUTUBE_POS_BACKUP_TOKEN_SUB=${{secrets.YOUTUBE_POS_BACKUP_TOKEN_SUB}}
-        node app.js
+        yarn start
 
     - name: git commit & push
       run: |

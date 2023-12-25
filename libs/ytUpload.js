@@ -1,7 +1,7 @@
 
 'use strict';
 
-const fs = require('fs');
+const fs = require('node:fs');
 const readline = require('readline');
 const tokenAuth = require('./tokenAuth');
 const {google} = require('googleapis');

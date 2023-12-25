@@ -10,3 +10,7 @@
 
 - https://github.com/n0bisuke/meet-mover-office
 - https://github.com/n0bisuke/meet-mover-hello
+
+## update
+
+- Node.js v21.2.0で検証 2023/12/25
