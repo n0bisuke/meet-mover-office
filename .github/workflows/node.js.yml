@@ -3,8 +3,8 @@ name: 30分ごと
 on:
   push:
     branches: [ main ]
-  # schedule:
-  # - cron:  '21,51 * * * *'
+  schedule:
+    - cron:  '21,51 * * * *'
 
 jobs:
   build:
