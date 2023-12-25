@@ -47,6 +47,23 @@ jobs:
           YOUTUBE_POS_BACKUP_TOKEN_SUB=${{secrets.YOUTUBE_POS_BACKUP_TOKEN_SUB}}
           YOUTUBE_POS_TOKEN=${{secrets.YOUTUBE_POS_TOKEN}}
           node app.js
+
+      - name: start action2
+        run: > 
+          G_TOKEN_OFFICE=${{secrets.G_TOKEN_OFFICE}}
+          G_CREDENTIALS_GDRIVE_MOVER=${{secrets.G_CREDENTIALS_GDRIVE_MOVER}}
+          ORIGIN_FOLDER_ID=${{secrets.ORIGIN_FOLDER_ID}}
+          DESTINATION_DRIVE_ID=${{secrets.DESTINATION_DRIVE_ID}}
+          DESTINATION_FOLDER_ID=${{secrets.DESTINATION_FOLDER_ID}}
+          MEET_SHEET_ID=${{secrets.MEET_SHEET_ID}}
+          G_SHEET_NB_CREDENTIALS=${{secrets.G_SHEET_NB_CREDENTIALS}}
+          G_SHEET_NB_TOKEN=${{secrets.G_SHEET_NB_TOKEN}}
+          YOUTUBE_DS_CREDENTIALS=${{secrets.YOUTUBE_DS_CREDENTIALS}}
+          YOUTUBE_POS_BACKUP_TOKEN=${{secrets.YOUTUBE_POS_BACKUP_TOKEN}}
+          YOUTUBE_POS_BACKUP_TOKEN_SUB=${{secrets.YOUTUBE_POS_BACKUP_TOKEN_SUB}}
+          YOUTUBE_POS_TOKEN=${{secrets.YOUTUBE_POS_TOKEN}}
+          node log.js
+
       - name: git commit & push
         run: |
           git config core.filemode false
