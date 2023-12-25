@@ -13,8 +13,8 @@ const _ytUpRouter = async (params) => {
   let token = '';
 
   if(params.channel === 'backup') {
-    // token = process.env.YOUTUBE_POS_BACKUP_TOKEN; // backupチャンネルへ
-    token = process.env.YOUTUBE_POS_BACKUP_TOKEN_SUB // backupチャンネルへ
+    token = process.env.YOUTUBE_POS_BACKUP_TOKEN; // backupチャンネルへ
+    // token = process.env.YOUTUBE_POS_BACKUP_TOKEN_SUB // backupチャンネルへ
   }else if(params.channel === 'school'){
     token = process.env.YOUTUBE_POS_TOKEN; // POSチャンネルへ
   }
