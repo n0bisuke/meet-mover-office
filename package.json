@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node --env-file=.env app.js",
+    "start": "node app.js",
+    "start:dev": "node --env-file=.env app.js",
     "deploy": "git add . && git commit -m 'update' && git push origin main"
   },
   "keywords": [],
