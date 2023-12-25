@@ -16,16 +16,16 @@ dayjs.tz.setDefault("Asia/Tokyo");
 require('dotenv').config();
 
 console.log(`--setup--`);
-console.log(process.env.ORIGIN_FOLDER_ID);
+console.log(process.env.ORIGIN_MEET_REC_FOLDER_ID);
 
 const Gdrive = require('./libs/gdrive/'); // Class;
 
 const credentialsStr = process.env.G_CREDENTIALS_GDRIVE_MOVER;
 const tokenStr = process.env.G_TOKEN_OFFICE;
-const ORIGIN_FOLDER_ID = process.env.ORIGIN_FOLDER_ID; //ここにフォルダIDを指定
+const ORIGIN_MEET_REC_FOLDER_ID = process.env.ORIGIN_MEET_REC_FOLDER_ID; //ここにフォルダIDを指定
 const DESTINATION_DRIVE_ID = process.env.DESTINATION_DRIVE_ID;
 
-const gdrive = new Gdrive(credentialsStr, tokenStr, ORIGIN_FOLDER_ID, DESTINATION_DRIVE_ID);
+const gdrive = new Gdrive(credentialsStr, tokenStr, ORIGIN_MEET_REC_FOLDER_ID, DESTINATION_DRIVE_ID);
 
 const ytUpload = require('./libs/ytUpload');
 const getClassRooms = require('./libs/getClassRooms');
@@ -127,8 +127,9 @@ const _gdrive2youtube = async (file) => {
 const main = async () => {
   // 1. MEETフォルダのファイルリストを取得
   const files = await gdrive.list();
-  // console.log(files);
-  
+  console.log(files);
+  return;
+
   //フォルダ作成 
   try {
     console.log(`フォルダ作成...`);

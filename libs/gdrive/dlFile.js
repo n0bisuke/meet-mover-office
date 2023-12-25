@@ -1,6 +1,7 @@
 
 const fs = require('fs');
 
+//Google Driveからファイルをダウンロードする
 async function dlFile(drive, file, DLPATH) {
     let progress = 0;
     // const drive = google.drive({version: 'v3', auth});

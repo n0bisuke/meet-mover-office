@@ -12,7 +12,7 @@ const createFolder = require('./createFolder');
 const moveParents = require('./moveParents');
 
 class Gdrive {
-    constructor(credentialsStr, tokenStr, ORIGIN_FOLDER_ID, DESTINATION_DRIVE_ID) {
+    constructor(credentialsStr, tokenStr, ORIGIN_MEET_REC_FOLDER_ID, DESTINATION_DRIVE_ID) {
         this.drive = google.drive({
             version: 'v3',
             auth: tokenAuth(credentialsStr, tokenStr)
@@ -24,13 +24,14 @@ class Gdrive {
         });
 
         this.DESTINATION_DRIVE_ID = DESTINATION_DRIVE_ID;
-        this.ORIGIN_FOLDER_ID = ORIGIN_FOLDER_ID;
+        this.ORIGIN_MEET_REC_FOLDER_ID = ORIGIN_MEET_REC_FOLDER_ID; //Meet RecordingsフォルダのID
         this.DL_FOLDER_NAME = './dl';
     }
  
-    async list(FOLDER_ID = this.ORIGIN_FOLDER_ID){
+    async list(FOLDER_ID = this.ORIGIN_MEET_REC_FOLDER_ID){
         try {
-            return await listFile(this.drive, FOLDER_ID);
+            console.log(`--フォルダ内を確認します...`)
+            return listFile(this.drive, FOLDER_ID);
         } catch (error) {
             throw new Error(error);
         }
@@ -52,7 +53,7 @@ class Gdrive {
         }
     }
 
-    async getMeetChat(file, FOLDER_ID = this.ORIGIN_FOLDER_ID, DL_FOLDER_NAME = this.DL_FOLDER_NAME){
+    async getMeetChat(file, FOLDER_ID = this.ORIGIN_MEET_REC_FOLDER_ID, DL_FOLDER_NAME = this.DL_FOLDER_NAME){
         try {
             const chatFile = await findFile(this.drive, file, FOLDER_ID);
             let ytInsertText = 'Meetチャット無し';
