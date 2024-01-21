@@ -12,13 +12,16 @@ const YT_WS_PLAYLIST_ID = process.env.YT_WS_PLAYLIST_ID;
 const _ytUpRouter = async (params) => {
   let token = '';
 
+  //backup or school
   if(params.channel === 'backup') {
-    console.log('バックアップチャンネルへアップロードします', token, typeof token);
     token = process.env.YOUTUBE_POS_BACKUP_TOKEN; // backupチャンネルへ
+    // console.log('バックアップチャンネルへアップロードします', token, typeof token);
+    console.log('バックアップチャンネルへアップロードします');
     // token = process.env.YOUTUBE_POS_BACKUP_TOKEN_SUB // backupチャンネルへ
   }else if(params.channel === 'school'){
-    console.log('授業動画チャンネルへアップロードします', token, typeof token);
     token = process.env.YOUTUBE_POS_TOKEN; // POSチャンネルへ
+    // console.log('授業動画チャンネルへアップロードします', token, typeof token);
+    console.log('授業動画チャンネルへアップロードします');
   }
   
   const auth = tokenAuth(credentials, token);
@@ -80,7 +83,11 @@ const youtubeUpload = async (uploadOptions) => {
       //アップロード後、授業動画以外は
       if(uploadOptions.channel !== 'school') {
         console.log('アップロード完了: 授業動画ではないのでリスト追加はしない');
-        return ;
+        return {
+          type: 'backup', //バックアップ動画の予定
+          status: 'ytUploadDone',
+          msg: 'アップロード完了: 授業動画ではないのでリスト追加はしない',
+        };
       }
 
       // console.log(uploadedVideo.data);
@@ -103,10 +110,20 @@ const youtubeUpload = async (uploadOptions) => {
 
       const res = await youtube.playlistItems.insert(playListEditOptions);
       // console.log(res.data);
-      return uploadedVideo.data;
+      // return uploadedVideo.data;
+      return {
+        type: 'school', //授業動画の予定
+        status: 'ytUploadDone',
+        msg: 'アップロード完了: 授業動画でリストも追加',
+      };
 
   } catch (error) {
       console.log('The API returned an error: ' + error);
+      return {
+        type: 'error',
+        status: 'ytUploadError',
+        msg: 'The API returned an error: ' + error,
+      }
   }
 
 }

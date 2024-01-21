@@ -94,12 +94,18 @@ const _gdrive2youtube = async (file) => {
       description: meetChatText,
     }
     console.log(`Uploading for ${type} Youtube...`);
-    await ytUpload(uploadOptions);
+
+    const ytResult = await ytUpload(uploadOptions);
 
     // 4. localファイル削除
     console.log(`local file deleting...`)
     fs.unlinkSync(`${DL_FOLDER_NAME}/${file.name}.mp4`);
     // console.log(`${DL_FOLDER_NAME}/${file.name}.mp4`);
+
+    // YouTube動画のアップロード完了ステータス
+    // if(ytResult?.type != undefined && ytResult?.type === ){
+    // }
+    return ytResult;
 
   } catch (error) {
     console.log(error);
@@ -136,21 +142,29 @@ const main = async () => {
   }
 
   try {
+    
+    let ytResult = {}; //YouTubeアップロード結果
 
     for await (const file of files) {
-      console.log(`start...`);      
+      console.log(`start...`);
 
       // 3. 1で作ったMeet Recordingsフォルダ内の該当するファイルをYouTubeにアップロード
+
       if(file.mimeType === 'video/mp4') { //動画ファイルのみ処理
         console.log(`YT upload...`);
-        await _gdrive2youtube(file);
+        ytResult = await _gdrive2youtube(file);
         console.log(`YT done, gdrive move...`);
       }
       
-
       // 4. Meet Recordingsフォルダから別のドライブ及び指定フォルダに移動
       // await gdrive.move(file, MOVED_DRIVE_ID, process.env.MOVED_FOLDER_ID);
-      await gdrive.move(file); //指定がない場合はドライブのルート(DRIVE_IDとFOLDER_IDが同じ)に移動
+      if(ytResult?.type === undefined || ytResult?.type !== 'error'){
+        await gdrive.move(file); //指定がない場合はドライブのルート(DRIVE_IDとFOLDER_IDが同じ)に移動
+        console.log(`Drive移動 done`);
+      }else{
+        console.log(`Drive移動 skip`);
+      }
+
       console.log(`---done----`);
     }
     
@@ -162,7 +176,13 @@ const main = async () => {
       time: dayjs().tz().format()
     }
     fs.writeFileSync(LOGFILE_NAME, JSON.stringify(logjson));
-    console.log(`log done--`)
+    console.log(`log done--`);
+
+    if(ytResult?.type === 'error'){
+      console.log(`異常終了: ${ytResult.msg}`);
+      process.exit(1);
+    }
+
   } catch (error) {
     console.log(error);
   }
