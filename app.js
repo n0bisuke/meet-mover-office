@@ -172,7 +172,7 @@ const main = async () => {
 
     //ロギング
     const logjson = {
-      msg: 'success',
+      result: ytResult,
       time: dayjs().tz().format()
     }
     fs.writeFileSync(LOGFILE_NAME, JSON.stringify(logjson));

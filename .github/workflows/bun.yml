@@ -69,3 +69,9 @@ jobs:
           git commit -m "Commit by github-actions"
           git push https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git HEAD:${{github.ref}}
         fi
+
+    - name: Set a new env1
+      run: bun run forghactions.js >> $GITHUB_ENV_MSG
+
+# - name: Run a multi-line script
+run-name: ${{ env.$GITHUB_ENV_MSG }}
