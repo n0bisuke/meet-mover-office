@@ -74,6 +74,13 @@ const youtubeUpload = async (uploadOptions) => {
         }
       );
       console.log('\n\n');
+
+      //アップロード後、授業動画以外は
+      if(uploadOptions.channel !== 'school') {
+        console.log('アップロード完了: 授業動画ではないのでリスト追加はしない');
+        return ;
+      }
+
       // console.log(uploadedVideo.data);
 
       //2. 非公開作業リストに追加
