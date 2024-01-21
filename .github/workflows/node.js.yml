@@ -1,4 +1,4 @@
-name: 60分ごと
+name: 60分ごと - Node.js CI
 
 on:
   push:
