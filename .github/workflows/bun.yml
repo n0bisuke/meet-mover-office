@@ -73,5 +73,8 @@ jobs:
     - name: Set a new env1
       run: bun run forghactions.js >> $GITHUB_ENV_MSG
 
+    - name: Set a new env2
+      run: echo $GITHUB_ENV_MSG
+
 # - name: Run a multi-line script
-run-name: ${{ env.$GITHUB_ENV_MSG }}
+run-name: ${{ github.actor }}
