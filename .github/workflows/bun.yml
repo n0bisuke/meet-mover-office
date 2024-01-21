@@ -79,6 +79,12 @@ jobs:
     - name: Set a new env3
       run: export MY_MSG=$(bun forghactions.js)
 
+    - name: Run Node.js script
+      id: run-script
+      run: |
+        OUTPUT=$(bun forghactions.js) # スクリプト実行
+        echo "::set-output name=result::$OUTPUT" # 出力をセット
+
 # - name: Run a multi-line script
 run-name: ${{ github.GITHUB_WORKFLOW }}
 # run-name: $MY_MSG
