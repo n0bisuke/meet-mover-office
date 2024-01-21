@@ -13,9 +13,11 @@ const _ytUpRouter = async (params) => {
   let token = '';
 
   if(params.channel === 'backup') {
+    console.log('バックアップチャンネルへアップロードします', token, typeof token);
     token = process.env.YOUTUBE_POS_BACKUP_TOKEN; // backupチャンネルへ
     // token = process.env.YOUTUBE_POS_BACKUP_TOKEN_SUB // backupチャンネルへ
   }else if(params.channel === 'school'){
+    console.log('授業動画チャンネルへアップロードします', token, typeof token);
     token = process.env.YOUTUBE_POS_TOKEN; // POSチャンネルへ
   }
   
