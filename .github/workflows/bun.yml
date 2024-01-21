@@ -82,8 +82,8 @@ jobs:
     - name: Run Node.js script
       id: run-script
       run: |
-        OUTPUT=$(bun forghactions.js) # スクリプト実行
-        echo "::set-output name=result::$OUTPUT" # 出力をセット
+        OUTPUT=$(bun forghactions.js)
+        echo "::set-output name=result::$OUTPUT"
 
 # - name: Run a multi-line script
 run-name: ${{ github.GITHUB_WORKFLOW }}
