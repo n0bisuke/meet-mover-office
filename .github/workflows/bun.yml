@@ -82,4 +82,4 @@ jobs:
 # - name: Run a multi-line script
 # run-name: ${{ github.actor }}
 # run-name: $MY_MSG
-run-name: [${{ github.event.inputs.environment }}/${{ github.event.inputs.resource }}]
+run-name: ${{ github.event.inputs.environment }}/${{ github.event.inputs.resource }}
