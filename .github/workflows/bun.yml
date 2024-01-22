@@ -70,22 +70,22 @@ jobs:
           git push https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git HEAD:${{github.ref}}
         fi
 
-    - name: Set a new env1
-      run: bun run forghactions.js >> $GITHUB_ENV_MSG
+    # - name: Set a new env1
+    #   run: bun run forghactions.js >> $GITHUB_ENV_MSG
 
-    - name: Set a new env2
-      run: echo $GITHUB_ENV_MSG
+    # - name: Set a new env2
+    #   run: echo $GITHUB_ENV_MSG
     
-    - name: Set a new env3
-      run: export MY_MSG=$(bun forghactions.js)
+    # - name: Set a new env3
+    #   run: export MY_MSG=$(bun forghactions.js)
 
-    - name: Run Node.js script
-      id: run-script
-      run: |
-        OUTPUT=$(bun forghactions.js)
-        echo "::set-output name=result::$OUTPUT"
+    # - name: Run Node.js script
+    #   id: run-script
+    #   run: |
+    #     OUTPUT=$(bun forghactions.js)
+    #     echo "::set-output name=result::$OUTPUT"
 
 # - name: Run a multi-line script
-run-name: ${{ github.GITHUB_WORKFLOW }}
+# run-name: ${{ github.GITHUB_WORKFLOW }}
 # run-name: $MY_MSG
 # run-name: ${{ github.event.inputs.environment }}/${{ github.event.inputs.resource }}
