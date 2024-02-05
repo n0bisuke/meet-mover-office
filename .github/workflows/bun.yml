@@ -2,9 +2,9 @@ name: 60分ごと - Bun
 
 on:
   push:
-    branches: [ main ]
-  schedule:
-    - cron:  '21 * * * *'
+    branches: [ dev ]
+  # schedule:
+    # - cron:  '21 * * * *'
 
 jobs:
   build:
