@@ -83,6 +83,7 @@ const youtubeUpload = async (uploadOptions) => {
                 console.log('アップロード完了');
               }
             }
+
           },
         }
       );
