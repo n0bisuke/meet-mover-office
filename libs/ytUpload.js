@@ -71,8 +71,10 @@ const youtubeUpload = async (uploadOptions) => {
           // Use the `onUploadProgress` event from Axios to track the
           // number of bytes uploaded to this point.
           onUploadProgress: evt => {
+            const progress = (evt.bytesRead / fileSize) * 100;
+
             if (process.stdout.isTTY) {
-              const progress = (evt.bytesRead / fileSize) * 100;
+              //ローカルの場合はこちら
               process.stdout.clearLine();
               process.stdout.cursorTo(0);
               process.stdout.write(`${Math.round(progress)}% complete`);
