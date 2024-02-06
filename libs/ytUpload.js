@@ -80,7 +80,7 @@ const youtubeUpload = async (uploadOptions) => {
               process.stdout.write(`${Math.round(progress)}% complete`);
             }else{
               //GitHub Actionsの場合はこちら
-              console.log('アップロード中...');
+              process.stdout.write('.')
               if(Math.round(progress) >= 100){
                 console.log('アップロード完了');
               }
