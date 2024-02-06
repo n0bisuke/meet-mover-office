@@ -2,7 +2,7 @@
 'use strict';
 
 const fs = require('node:fs');
-const readline = require('readline');
+// const readline = require('readline');
 const tokenAuth = require('./tokenAuth');
 const {google} = require('googleapis');
 
@@ -71,12 +71,18 @@ const youtubeUpload = async (uploadOptions) => {
           // Use the `onUploadProgress` event from Axios to track the
           // number of bytes uploaded to this point.
           onUploadProgress: evt => {
-            const progress = (evt.bytesRead / fileSize) * 100;
-            // readline.clearLine(process.stdout, 0);
-            // readline.cursorTo(process.stdout, 0, null);
-            process.stdout.clearLine();
-            process.stdout.cursorTo(0);
-            process.stdout.write(`${Math.round(progress)}% complete`);
+            if (process.stdout.isTTY) {
+              const progress = (evt.bytesRead / fileSize) * 100;
+              process.stdout.clearLine();
+              process.stdout.cursorTo(0);
+              process.stdout.write(`${Math.round(progress)}% complete`);
+            }else{
+              //GitHub Actionsの場合はこちら
+              console.log('アップロード中...');
+              if(Math.round(progress) >= 100){
+                console.log('アップロード完了');
+              }
+            }
           },
         }
       );
