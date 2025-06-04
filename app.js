@@ -16,6 +16,9 @@ dayjs.tz.setDefault("Asia/Tokyo");
 
 console.log(`--setup--`);
 
+// トークン有効性チェック関数をインポート
+const { checkTokenValidity } = require('./tokenValidation');
+
 const Gdrive = require('./libs/gdrive/'); // Class;
 
 const credentialsStr = process.env.G_CREDENTIALS_GDRIVE_MOVER;
@@ -128,6 +131,14 @@ const _gdrive2youtube = async (file) => {
 // }
 
 const main = async () => {
+  // 0. トークンの有効性をチェック
+  console.log('=== Token Validation ===');
+  const isTokenValid = await checkTokenValidity(credentialsStr, tokenStr);
+  if (!isTokenValid) {
+    console.error('❗ Token validation failed. Please run: npm run generate-token');
+    process.exit(1);
+  }
+  
   // 1. Meet Recordingsフォルダから、録画したての録画ファイルのリストを取得
   const files = await gdrive.list();
   // console.log(files);

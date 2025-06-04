@@ -7,7 +7,9 @@
     "start": "node app.js",
     "start:dev": "node --env-file=.env app.js",
     "start:bun": "bun app.js",
-    "deploy": "git add . && git commit -m 'update' && git push origin main"
+    "deploy": "git add . && git commit -m 'update' && git push origin main",
+    "check-token": "node --env-file=.env tokentools/checkToken.js",
+    "generate-token": "node --env-file=.env tokentools/generateToken.js"
   },
   "keywords": [],
   "author": "",
