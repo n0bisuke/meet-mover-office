@@ -4,3 +4,8 @@ playground
 node_modules
 .env
 dl
+
+# セキュリティ関連ファイル
+.secure_token_backup.json
+*.token
+*.credentials

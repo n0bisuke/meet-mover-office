@@ -12,20 +12,12 @@ module.exports = (credentialsStr, tokenStr) => {
     // トークンの自動更新設定
     oAuth2Client.on('tokens', (tokens) => {
         if (tokens.refresh_token) {
-            console.log('🔄 New refresh token received');
+            console.log('🔄 Refresh token updated');
         }
         if (tokens.access_token) {
             console.log('✅ Access token refreshed successfully');
-            
-            // 新しいトークンを現在のトークンにマージ
-            const updatedToken = {
-                ...token,
-                access_token: tokens.access_token,
-                expiry_date: tokens.expiry_date
-            };
-            
-            // 環境変数として使用できる形で出力（ログに記録）
-            console.log('Updated token for env:', JSON.stringify(updatedToken));
+            // セキュリティ上の理由でトークンの詳細はログに出力しない
+            console.log('ℹ️  New token received - please update your environment variables manually if needed');
         }
     });
     
