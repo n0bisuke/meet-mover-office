@@ -31,6 +31,9 @@ const gdrive = new Gdrive(credentialsStr, tokenStr, ORIGIN_MEET_REC_FOLDER_ID, M
 const ytUpload = require('./libs/ytUpload');
 const getClassRooms = require('./libs/getClassRooms');
 
+// Geminiのメモファイル名からMeet IDを取得する関数
+const { findMeetIdFromGemini } = require('./libs/checkRoomIDgemini');
+
 console.log(`--setup done--`);
 
 
@@ -141,7 +144,6 @@ const main = async () => {
   
   // 1. Meet Recordingsフォルダから、録画したての録画ファイルのリストを取得
   const files = await gdrive.list();
-  // console.log(files);
 
   // 2. ローカルでDLフォルダ作成 - DLの下準備
   try {
@@ -156,29 +158,97 @@ const main = async () => {
     
     let ytResult = {}; //YouTubeアップロード結果
 
+    // console.log(files);
+
     for await (const file of files) {
       console.log(`start...`);
 
-      // 3. 1で作ったMeet Recordingsフォルダ内の該当するファイルをYouTubeにアップロード
-
-      if(file.mimeType === 'video/mp4') { //動画ファイルのみ処理
+      if (file.mimeType === 'video/mp4') {
+        // continue; // 動画ファイルは後で処理するのでスキップ
+        // 動画ファイルの処理
+        // console.log(`🎥 Processing video file: ${file.name}`);
         console.log(`YT upload...`);
         ytResult = await _gdrive2youtube(file);
         console.log(`YT done, gdrive move...`);
-      }
-      
-      // 4. Meet Recordingsフォルダから別のドライブ及び指定フォルダに移動
-      // await gdrive.move(file, MOVED_DRIVE_ID, process.env.MOVED_FOLDER_ID);
-      if(ytResult?.type === undefined || ytResult?.type !== 'error'){
-        await gdrive.move(file); //指定がない場合はドライブのルート(DRIVE_IDとFOLDER_IDが同じ)に移動
-        console.log(`Drive移動 done`);
-      }else{
-        console.log(`Drive移動 skip`);
+        
+        // YouTube成功時のみ移動
+        if(ytResult?.type === undefined || ytResult?.type !== 'error'){
+          await gdrive.move(file);
+          console.log(`Drive移動 done`);
+        } else {
+          console.log(`Drive移動 skip`);
+        }
+        
+      } else if (file.mimeType === 'application/vnd.google-apps.document' && 
+                file.name.trim().includes('Gemini によるメモ')) {
+        // Geminiファイルの処理
+        // console.log(`🤖 Processing Gemini file: ${file.name}`);
+        console.log(`🤖 Processing Gemini file`);
+        const result = findMeetIdFromGemini(file.name, files);
+        // console.log(`Gemini analysis result:`, result);
+        
+        if (result.success) {
+          // console.log(`✅ Found Meet ID: ${result.meetId} for Gemini file`);
+          console.log(`✅ Found Meet ID: [REDACTED] for Gemini file`);
+            
+            // 重要: file.meetId を設定
+            file.meetId = result.meetId;  // ← この行を追加！
+            
+            const renamedFile = await gdrive.rename(file, `${result.meetId} - ${file.name}`);
+            
+            // renamedFile.data にも meetId を設定
+            const fileWithMeetId = {
+              ...renamedFile,
+              meetId: result.meetId  // ← これも重要
+            };
+            console.log(`✅ File renamed successfully`);
+            
+            await gdrive.move(fileWithMeetId);
+            console.log(`Gemini file moved`);
+        } else {
+          console.log(`⚠️  Could not find Meet ID for Gemini file: ${result.error}`);
+        }
+        
+      } else {
+        // その他のファイル（チャットログなど）
+        // console.log(`📄 Other file: ${file.name} (${file.mimeType})`);
+        // 必要に応じて処理
+        console.log(`📄 Other file`);
+        await gdrive.move(file);
       }
 
       console.log(`---done----`);
     }
+
+    // for await (const file of files) {
+    //   console.log(`start...`);
+
+    //   // 3. 1で作ったMeet Recordingsフォルダ内の該当するファイルをYouTubeにアップロード
+    //   //動画ならば
+    //   if(file.mimeType === 'video/mp4') { //動画ファイルのみ処理
+    //     console.log(`YT upload...`);
+    //     // ytResult = await _gdrive2youtube(file);
+    //     console.log(`YT done, gdrive move...`);
+    //   }
+      
+    //   // 4. Meet Recordingsフォルダから別のドライブ及び指定フォルダに移動
+    //   // await gdrive.move(file, MOVED_DRIVE_ID, process.env.MOVED_FOLDER_ID);
+    //   if(ytResult?.type === undefined || ytResult?.type !== 'error'){
+    //     console.log(`Drive移動...`);
+    //     console.log(`file: ${file.name}, id: ${file.id}`);
+    //     const result = findMeetIdFromGemini(file.name, files);
+    //     console.log(result);
+
+    //     // await gdrive.move(file); //指定がない場合はドライブのルート(DRIVE_IDとFOLDER_IDが同じ)に移動
+    //     console.log(`Drive移動 done`);
+    //   }else{
+    //     console.log(`Drive移動 skip`);
+    //   }
+
+    //   console.log(`---done----`);
+    // }
     
+    console.log(`----All DONE----`);
     fs.rmdirSync(DL_FOLDER_NAME); //フォルダ削除
 
     //ロギング

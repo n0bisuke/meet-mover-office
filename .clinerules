@@ -1,0 +1,130 @@
+# Google Meet Recording Mover & YouTube Uploader
+
+## プロジェクト概要
+Google Meet の録画ファイルを Google Drive から取得し、YouTube にアップロードして別のドライブに移動する自動化システム。GitHub Actions による定期実行で運用される。
+
+## 核心機能
+1. **Google Meet録画の自動処理**: Meet Recordings フォルダから録画ファイル（mp4）を検出
+2. **YouTube自動アップロード**: 録画を授業用/バックアップ用チャンネルに自動投稿
+3. **ファイル移動**: 処理済みファイルを指定ドライブに移動
+4. **Meet ID抽出**: ファイル名から Meet ID（xxx-xxxx-xxx 形式）を抽出
+5. **授業判定**: Meet ID を基に Google Sheets で授業かどうかを判定
+6. **チャット取得**: Meet チャットログを YouTube 概要欄に追加
+
+## アーキテクチャ
+
+### 主要ファイル構成
+```
+meet-mover-office/
+├── app.js                      # メインアプリケーション
+├── libs/
+│   ├── gdrive/                 # Google Drive 操作モジュール
+│   │   ├── index.js           # Gdrive クラス（メインAPI）
+│   │   ├── listFile.js        # ファイル一覧取得
+│   │   ├── dlFile.js          # ファイルダウンロード
+│   │   ├── deleteFile.js      # ファイル削除
+│   │   ├── findFile.js        # ファイル検索
+│   │   ├── createFolder.js    # フォルダ作成
+│   │   └── moveParents.js     # ファイル移動
+│   ├── tokenAuth.js           # OAuth認証（自動トークン更新対応）
+│   ├── ytUpload.js            # YouTube アップロード
+│   └── getClassRooms.js       # 授業部屋判定（Google Sheets連携）
+├── tokenValidation.js         # トークン有効性チェック
+├── checkToken.js              # トークン状態確認CLI
+├── generateToken.js           # 新規トークン取得CLI
+├── secureTokenRefresh.js      # セキュアなトークン更新
+└── .github/workflows/         # GitHub Actions設定
+    ├── node.js.yml           # 本番用（60分ごと実行）
+    └── bun.yml               # 開発用
+```
+
+### データフロー
+1. **Meet Recordings フォルダ監視** → ファイル一覧取得
+2. **Meet ID抽出** → ファイル名の正規表現マッチング（xxx-xxxx-xxx）
+3. **授業判定** → Google Sheets で Meet ID 検索
+4. **ダウンロード** → ローカルの `./dl` フォルダに一時保存
+5. **YouTube アップロード** → 授業用 or バックアップ用チャンネル
+6. **Drive移動** → 処理済みファイルを別ドライブに移動
+7. **クリーンアップ** → ローカルファイル削除
+
+## 環境変数
+```bash
+# Google Drive認証
+G_CREDENTIALS_GDRIVE_MOVER    # OAuth クレデンシャル（JSON）
+G_TOKEN_OFFICE                # OAuth トークン（JSON、自動更新対応）
+
+# Drive設定
+ORIGIN_MEET_REC_FOLDER_ID     # Meet Recordings フォルダID
+MOVED_DRIVE_ID                # 移動先ドライブID
+
+# Google Sheets（授業判定用）
+MEET_SHEET_ID                 # 授業一覧シートID
+G_SHEET_NB_CREDENTIALS        # Sheets用クレデンシャル
+G_SHEET_NB_TOKEN              # Sheets用トークン
+
+# YouTube設定
+YOUTUBE_DS_CREDENTIALS        # YouTube用クレデンシャル
+YOUTUBE_POS_TOKEN             # 授業用チャンネルトークン
+YOUTUBE_POS_BACKUP_TOKEN      # バックアップ用チャンネルトークン
+YT_WS_PLAYLIST_ID             # プレイリストID
+```
+
+## 技術仕様
+
+### 認証システム
+- **OAuth 2.0**: Google APIs 用の認証
+- **自動トークン更新**: リフレッシュトークンによる自動延長
+- **セキュリティ**: トークンはログに出力されない
+
+### ファイル処理
+- **対象ファイル**: `video/mp4` のみ
+- **Meet ID形式**: `/[a-z]{3}-[a-z]{4}-[a-z]{3}/` パターン
+- **一時保存**: `./dl` フォルダ（処理後自動削除）
+
+### YouTube連携
+- **チャンネル振り分け**: 授業動画は `school` チャンネル、その他は `backup` チャンネル
+- **プライバシー**: 全て `private` 設定
+- **メタデータ**: タイトルは授業名 + ファイル名、説明欄にチャットログ
+
+### エラーハンドリング
+- トークン期限切れ時の自動更新
+- Meet ID 抽出失敗時の安全な処理
+- YouTube アップロード失敗時のDrive移動スキップ
+
+## 開発ガイドライン
+
+### 重要な制約
+1. **セキュリティ第一**: トークン・認証情報は絶対にログ出力しない
+2. **冪等性**: 同じファイルの重複処理を避ける
+3. **エラー安全性**: 一部失敗でも他のファイル処理は継続
+4. **リソース管理**: ダウンロードファイルは必ず削除
+
+### コーディング規約
+- `'use strict';` 必須
+- 非同期処理は `async/await` 使用
+- エラーハンドリングは `try-catch` で適切に処理
+- ログ出力は処理状況が分かるよう詳細に
+
+### テスト・デバッグ
+```bash
+npm run check-token          # トークン状態確認
+npm run generate-token       # 新規トークン取得
+npm run refresh-token        # セキュアなトークン更新
+npm run start:dev           # 開発環境実行
+```
+
+### デプロイメント
+- **本番**: GitHub Actions（main ブランチ、60分ごと）
+- **開発**: GitHub Actions（dev ブランチ、手動実行）
+- **ログ**: GitHub Actions ログでエラー監視
+
+## セキュリティ考慮事項
+- `.env` ファイルは git 管理外
+- `.secure_token_backup.json` も git 管理外
+- GitHub Secrets で本番環境変数管理
+- トークンの自動更新ログは安全な形式のみ
+
+## 運用監視
+- `log.json` でYouTubeアップロード結果記録
+- GitHub Actions の実行ログで障害検知
+- 異常終了時は `process.exit(1)` でステータス通知

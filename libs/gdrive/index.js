@@ -91,6 +91,23 @@ class Gdrive {
             throw new Error(error);
         }
     }
+
+    async rename(file, newName){
+        try {
+            const params = {
+                fileId: file.id,
+                requestBody: {
+                    name: newName
+                }
+            };
+            const response = await this.drive.files.update(params);
+            // console.log(`✅ File renamed: ${file.name} → ${response.data.name}`);
+            console.log(`✅ File renamed`);
+            return response.data; // ファイルオブジェクトのみ返す       
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
 }
   
 module.exports = Gdrive;
