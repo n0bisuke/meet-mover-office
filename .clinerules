@@ -5,11 +5,13 @@ Google Meet の録画ファイルを Google Drive から取得し、YouTube に�
 
 ## 核心機能
 1. **Google Meet録画の自動処理**: Meet Recordings フォルダから録画ファイル（mp4）を検出
-2. **YouTube自動アップロード**: 録画を授業用/バックアップ用チャンネルに自動投稿
+2. **YouTube自動アップロード**: 録画を授業用/バックアップ用/カスタムチャンネルに自動投稿
 3. **ファイル移動**: 処理済みファイルを指定ドライブに移動
 4. **Meet ID抽出**: ファイル名から Meet ID（xxx-xxxx-xxx 形式）を抽出
 5. **授業判定**: Meet ID を基に Google Sheets で授業かどうかを判定
 6. **チャット取得**: Meet チャットログを YouTube 概要欄に追加
+7. **Geminiメモ処理**: Gemini生成メモファイルからMeet IDを推定してリネーム・移動
+8. **マルチチャンネル対応**: 条件に応じて複数のYouTubeチャンネルに振り分け
 
 ## アーキテクチャ
 
@@ -27,25 +29,34 @@ meet-mover-office/
 │   │   ├── createFolder.js    # フォルダ作成
 │   │   └── moveParents.js     # ファイル移動
 │   ├── tokenAuth.js           # OAuth認証（自動トークン更新対応）
-│   ├── ytUpload.js            # YouTube アップロード
-│   └── getClassRooms.js       # 授業部屋判定（Google Sheets連携）
+│   ├── ytUpload.js            # YouTube アップロード（マルチチャンネル対応）
+│   ├── getClassRooms.js       # 授業部屋判定（Google Sheets連携）
+│   └── checkRoomIDgemini.js   # Geminiメモファイル解析・Meet ID推定
+├── tokentools/                # トークン管理ツール群
+│   ├── checkToken.js          # Google Drive/Sheetsトークン確認
+│   ├── generateToken.js       # Google Drive/Sheetsトークン生成
+│   ├── checkYouTubeToken.js   # YouTubeトークン確認・チャンネル情報表示
+│   ├── generateYouTubeToken.js # YouTubeトークン生成
+│   └── checkPlaylist.js       # プレイリスト設定確認・テスト
 ├── tokenValidation.js         # トークン有効性チェック
-├── checkToken.js              # トークン状態確認CLI
-├── generateToken.js           # 新規トークン取得CLI
 ├── secureTokenRefresh.js      # セキュアなトークン更新
+├── CUSTOM_CHANNELS.md         # カスタムチャンネル設定ガイド
 └── .github/workflows/         # GitHub Actions設定
-    ├── node.js.yml           # 本番用（60分ごと実行）
-    └── bun.yml               # 開発用
+    ├── node.js.yml           # 本番用（2時間ごと実行）
+    └── bun.yml               # 開発用（手動実行）
 ```
 
 ### データフロー
 1. **Meet Recordings フォルダ監視** → ファイル一覧取得
-2. **Meet ID抽出** → ファイル名の正規表現マッチング（xxx-xxxx-xxx）
-3. **授業判定** → Google Sheets で Meet ID 検索
-4. **ダウンロード** → ローカルの `./dl` フォルダに一時保存
-5. **YouTube アップロード** → 授業用 or バックアップ用チャンネル
-6. **Drive移動** → 処理済みファイルを別ドライブに移動
-7. **クリーンアップ** → ローカルファイル削除
+2. **ファイル種別判定** → 動画ファイル、Geminiメモ、その他ファイルの振り分け
+3. **Meet ID抽出・推定** → ファイル名の正規表現マッチングまたはGeminiメモからの日時照合
+4. **授業判定** → Google Sheets で Meet ID 検索
+5. **チャンネル振り分け** → 授業・バックアップ・カスタムチャンネルの判定
+6. **ダウンロード** → ローカルの `./dl` フォルダに一時保存
+7. **YouTube アップロード** → 対応チャンネルにアップロード・プレイリスト追加
+8. **リネーム処理** → GeminiメモファイルのMeet ID付与リネーム
+9. **Drive移動** → 処理済みファイルを別ドライブに移動
+10. **クリーンアップ** → ローカルファイル削除
 
 ## 環境変数
 ```bash
@@ -62,11 +73,13 @@ MEET_SHEET_ID                 # 授業一覧シートID
 G_SHEET_NB_CREDENTIALS        # Sheets用クレデンシャル
 G_SHEET_NB_TOKEN              # Sheets用トークン
 
-# YouTube設定
+# YouTube設定（マルチチャンネル対応）
 YOUTUBE_DS_CREDENTIALS        # YouTube用クレデンシャル
 YOUTUBE_POS_TOKEN             # 授業用チャンネルトークン
 YOUTUBE_POS_BACKUP_TOKEN      # バックアップ用チャンネルトークン
-YT_WS_PLAYLIST_ID             # プレイリストID
+YOUTUBE_CUSTOM_TOKEN          # カスタムチャンネル1トークン
+YOUTUBE_CUSTOM2_TOKEN         # カスタムチャンネル2トークン
+YT_WS_PLAYLIST_ID             # プレイリストID（手動ソート設定必須）
 ```
 
 ## 技術仕様
@@ -82,14 +95,23 @@ YT_WS_PLAYLIST_ID             # プレイリストID
 - **一時保存**: `./dl` フォルダ（処理後自動削除）
 
 ### YouTube連携
-- **チャンネル振り分け**: 授業動画は `school` チャンネル、その他は `backup` チャンネル
-- **プライバシー**: 全て `private` 設定
+- **チャンネル振り分け**: 授業動画は `school` チャンネル、その他は `backup` チャンネル、カスタム条件で `custom`/`custom2` チャンネル
+- **プライバシー**: 授業動画は `unlisted`、その他は `private` 設定
 - **メタデータ**: タイトルは授業名 + ファイル名、説明欄にチャットログ
+- **プレイリスト管理**: 授業動画のみプレイリストに自動追加（手動ソート設定必須）
+- **エラーハンドリング**: プレイリスト追加失敗時もYouTubeアップロード自体は成功として処理
 
 ### エラーハンドリング
 - トークン期限切れ時の自動更新
 - Meet ID 抽出失敗時の安全な処理
 - YouTube アップロード失敗時のDrive移動スキップ
+- プレイリスト追加失敗時の継続処理（アップロードは成功扱い）
+
+### Geminiメモ処理
+- **日時抽出**: Geminiメモファイル名から会議開始日時を抽出
+- **動画マッチング**: 同じ日時の動画ファイルを検索しMeet IDを推定
+- **リネーム**: `Meet ID - 元のファイル名` 形式でリネーム
+- **自動移動**: リネーム後に自動でDrive移動
 
 ## 開発ガイドライン
 
@@ -107,16 +129,30 @@ YT_WS_PLAYLIST_ID             # プレイリストID
 
 ### テスト・デバッグ
 ```bash
-npm run check-token          # トークン状態確認
-npm run generate-token       # 新規トークン取得
+# トークン管理
+npm run check-token          # Google Drive/Sheetsトークン状態確認
+npm run generate-token       # Google Drive/Sheets新規トークン取得
 npm run refresh-token        # セキュアなトークン更新
+npm run check-youtube-token  # YouTubeトークン状態確認・チャンネル情報表示
+npm run generate-youtube-token # YouTube新規トークン取得
+npm run check-playlist       # プレイリスト設定確認・テスト
+
+# 実行
 npm run start:dev           # 開発環境実行
+npm run start:bun           # Bun環境実行
 ```
 
+### カスタムチャンネル設定
+- **振り分けロジック**: `app.js` 94行目付近でMeet IDパターンやファイル名による条件分岐
+- **設定例**: Meet ID先頭文字、ファイル名キーワード、時間帯などによる振り分け
+- **トークン管理**: チャンネルごとに個別のOAuth2トークンが必要
+- **詳細ガイド**: `CUSTOM_CHANNELS.md` で詳細な設定手順を記載
+
 ### デプロイメント
-- **本番**: GitHub Actions（main ブランチ、60分ごと）
+- **本番**: GitHub Actions（main ブランチ、2時間ごと実行）
 - **開発**: GitHub Actions（dev ブランチ、手動実行）
 - **ログ**: GitHub Actions ログでエラー監視
+- **環境変数**: GitHub Secrets で本番環境変数管理（カスタムチャンネルトークン含む）
 
 ## セキュリティ考慮事項
 - `.env` ファイルは git 管理外
@@ -128,3 +164,20 @@ npm run start:dev           # 開発環境実行
 - `log.json` でYouTubeアップロード結果記録
 - GitHub Actions の実行ログで障害検知
 - 異常終了時は `process.exit(1)` でステータス通知
+- プレイリスト追加失敗は警告レベル（継続処理）
+
+## トラブルシューティング
+
+### YouTube関連エラー
+- **"Playlist should use manual sorting"**: プレイリストを手動ソートに変更、`npm run check-playlist`で確認
+- **トークンエラー**: `npm run check-youtube-token`で状態確認、無効なら`npm run generate-youtube-token`で再生成
+- **チャンネル振り分け問題**: `app.js`の判定ロジックをデバッグ、`console.log()`でファイル情報を出力
+
+### Geminiメモ処理エラー
+- **Meet ID推定失敗**: 日時フォーマットの不一致、対応する動画ファイルがない場合
+- **リネーム失敗**: ファイル権限の問題、Driveトークンの有効性を確認
+
+### パフォーマンス最適化
+- **Node.js v24対応**: 最新のAPIとパフォーマンス改善を活用
+- **非同期処理**: `async/await`で適切な並行処理を実装
+- **メモリ管理**: 一時ファイルの確実な削除、大きなファイルのストリーム処理

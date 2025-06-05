@@ -92,6 +92,16 @@ const _gdrive2youtube = async (file) => {
       type = 'school';
     }
 
+    // カスタムチャンネルの判定ロジック（必要に応じて条件を変更）
+    // 例: 特定のMeet IDパターンやファイル名でカスタムチャンネルに振り分け
+    if(file.meetId && file.meetId.startsWith('custom')) {
+      type = 'custom';
+    } else if(file.name.includes('fmvs')) {
+      type = 'honka';
+    } else if(file.name.includes('cnbs')) {
+      type = 'fki';
+    }
+
     const uploadOptions = {
       MOVIE_PATH: `${DL_FOLDER_NAME}/${file.name}.mp4`,
       title: `${ytUploadTitle}`,

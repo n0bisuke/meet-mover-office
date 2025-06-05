@@ -32,8 +32,25 @@ G_TOKEN_OFFICE={"access_token":"ya29~~~~"token_type":"Bearer","expiry_date":1749
 `{"access_token":"ya29~~~~"token_type":"Bearer","expiry_date":1749048764936}`
 ```
 
-## update
+## コマンド一覧
 
-- Node.js v21.2.0で検証 2023/12/25
-- Bun v1に切り替えてみた 2024/1/22
-- Node.js v24に切り替え 2025/6/5
+### 基本コマンド
+```bash
+npm start              # 本番実行
+npm run start:dev      # 開発環境で実行
+npm run start:bun      # Bunで実行
+npm run deploy         # Gitコミット&プッシュ
+```
+
+### トークン管理
+```bash
+# Google Drive/Sheetsトークン
+npm run check-token           # トークン状態確認
+npm run generate-token        # 新規トークン取得
+npm run refresh-token         # セキュアなトークン更新
+
+# YouTubeトークン
+npm run check-youtube-token   # YouTubeトークン状態確認
+npm run generate-youtube-token # 新規YouTubeトークン取得
+npm run check-playlist        # プレイリスト設定確認
+```

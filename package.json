@@ -1,6 +1,6 @@
 {
   "name": "gdrive-mover",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -8,9 +8,12 @@
     "start:dev": "node --env-file=.env app.js",
     "start:bun": "bun app.js",
     "deploy": "git add . && git commit -m 'update' && git push origin main",
-    "check-token": "node --env-file=.env checkToken.js",
-    "generate-token": "node --env-file=.env generateToken.js",
-    "refresh-token": "node --env-file=.env secureTokenRefresh.js"
+    "check-token": "node --env-file=.env tokentools/checkToken.js",
+    "check-youtube-token": "node --env-file=.env tokentools/checkYouTubeToken.js",
+    "check-playlist": "node --env-file=.env tokentools/checkPlaylist.js",
+    "generate-token": "node --env-file=.env tokentools/generateToken.js",
+    "generate-youtube-token": "node --env-file=.env tokentools/generateYouTubeToken.js",
+    "refresh-token": "node --env-file=.env tokentools/secureTokenRefresh.js"
   },
   "keywords": [],
   "author": "",

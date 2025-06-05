@@ -56,6 +56,8 @@ jobs:
         YT_WS_PLAYLIST_ID=${{secrets.YT_WS_PLAYLIST_ID}}
         YOUTUBE_POS_BACKUP_TOKEN=${{secrets.YOUTUBE_POS_BACKUP_TOKEN}}
         YOUTUBE_POS_BACKUP_TOKEN_SUB=${{secrets.YOUTUBE_POS_BACKUP_TOKEN_SUB}}
+        YOUTUBE_CUSTOM_TOKEN=${{secrets.YOUTUBE_CUSTOM_TOKEN}}
+        YOUTUBE_CUSTOM2_TOKEN=${{secrets.YOUTUBE_CUSTOM2_TOKEN}}
         npm start
 
     - name: git commit & push
